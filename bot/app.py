@@ -82,9 +82,17 @@ async def log_whatsapp_message(direction: str, from_no: str, to_no: str, payload
 
 @app.get("/webhook")
 async def verify_webhook(mode: str = None, challenge: str = None, verify_token: str = None):
-    if mode == "subscribe" and verify_token == WEBHOOK_VERIFY_TOKEN:
+    import sys
+    print(f"[DEBUG] Incoming webhook verify request: mode={mode}, challenge={challenge}, verify_token={verify_token}", file=sys.stderr)
+    print(f"[DEBUG] Loaded WEBHOOK_VERIFY_TOKEN={WEBHOOK_VERIFY_TOKEN}", file=sys.stderr)
+
+    if mode == "subscribe" and verify_token and verify_token.strip() == WEBHOOK_VERIFY_TOKEN.strip():
+        print("[DEBUG] Verification successful ✅", file=sys.stderr)
         return PlainTextResponse(challenge)
-    raise HTTPException(status_code=403, detail="Verification failed")
+    else:
+        print("[DEBUG] Verification failed ❌", file=sys.stderr)
+        raise HTTPException(status_code=403, detail=f"Verification failed: got {verify_token!r}, expected {WEBHOOK_VERIFY_TOKEN!r}")
+
 
 @app.post("/webhook")
 async def webhook_receiver(request: Request, x_hub_signature: Optional[str] = Header(None)):
