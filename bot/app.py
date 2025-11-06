@@ -108,6 +108,7 @@ async def webhook_receiver(request: Request, x_hub_signature: Optional[str] = He
     if not verify_signature(raw, x_hub_signature):
         raise HTTPException(status_code=403, detail="Invalid signature")
     payload = await request.json()
+    print("[DEBUG] Raw webhook payload:", json.dumps(payload, indent=2))
     entry = payload.get("entry", [])
     for e in entry:
         for change in e.get("changes", []):
