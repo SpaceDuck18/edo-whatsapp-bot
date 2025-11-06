@@ -29,6 +29,15 @@ SUPABASE = create_client(SUPABASE_URL, SUPABASE_KEY)
 WHATSAPP_API_URL = f"https://graph.facebook.com/v17.0/{WHATSAPP_PHONE_NUMBER_ID}/messages"
 
 app = FastAPI(title="edo - WhatsApp Bot")
+@app.get("/debug-env")
+async def debug_env():
+    import os
+    return {
+        "WEBHOOK_VERIFY_TOKEN": os.getenv("WEBHOOK_VERIFY_TOKEN"),
+        "WHATSAPP_TOKEN": bool(os.getenv("WHATSAPP_TOKEN")),
+        "SUPABASE_URL": bool(os.getenv("SUPABASE_URL")),
+    }
+
 
 async def send_whatsapp_text(to: str, text: str, preview_url: bool = False):
     payload = {
