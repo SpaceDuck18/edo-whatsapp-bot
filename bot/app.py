@@ -105,8 +105,8 @@ async def verify_webhook(request: Request):
 @app.post("/webhook")
 async def webhook_receiver(request: Request, x_hub_signature: Optional[str] = Header(None)):
     raw = await request.body()
-    if not verify_signature(raw, x_hub_signature):
-        raise HTTPException(status_code=403, detail="Invalid signature")
+    #if not verify_signature(raw, x_hub_signature):
+    #    raise HTTPException(status_code=403, detail="Invalid signature")
     payload = await request.json()
     print("[DEBUG] Raw webhook payload:", json.dumps(payload, indent=2))
     entry = payload.get("entry", [])
